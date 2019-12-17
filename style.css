@@ -1,0 +1,29 @@
+body {
+  text-align: center;
+}
+
+.sketchDiv {
+  box-sizing: border-box;
+  width: 555px;
+  height: 555px;
+  display: inline-block;
+}
+
+.row {
+  margin: 0px;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.cell {
+  border: 1px solid black;
+  position: relative;
+  top: 0;
+  color: black;
+}
+
+.title {
+  margin-top: 3%;
+  text-align: center;
+}
