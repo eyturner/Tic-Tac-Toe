@@ -84,7 +84,7 @@ const gameBoard = (() => {
 
   const addMark = function(mark, row, col) {
     //Add mark to board[row][col]
-    if(board[row][col] != '') {
+    if (board[row][col] != '') {
       console.log('You cant do that!');
       return board;
     }
@@ -111,7 +111,22 @@ const gameBoard = (() => {
 const Player = (name, char) => {
   const getName = () => name;
   const getChar = () => char;
+  const isWinner = (winningChar) => {
+    if (char == winningChar) {
+      return true;
+    }
+    return false;
+  }
+
+  return {
+    getName,
+    getChar,
+    isWinner
+  };
 }
+
+const eli = Player('Eli', 'X');
+console.log(eli.isWinner('X'));
 
 gameBoard.addMark('X', 2, 2);
 gameBoard.printBoard();
