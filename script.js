@@ -108,6 +108,11 @@ const gameBoard = (() => {
 
 })();
 
+const Player = (name, char) => {
+  const getName = () => name;
+  const getChar = () => char;
+}
+
 gameBoard.addMark('X', 2, 2);
 gameBoard.printBoard();
 
