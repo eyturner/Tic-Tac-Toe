@@ -17,6 +17,7 @@ body {
 }
 
 .cell {
+  font-size: 60px;
   border: 1px solid black;
   position: relative;
   top: 0;
@@ -24,6 +25,7 @@ body {
 }
 
 .title {
+  font-size: 48px;
   margin-top: 3%;
   text-align: center;
 }

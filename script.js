@@ -1,3 +1,6 @@
+getRow = (id) => (Math.floor(id / 3));
+getCol = (id) => (id % 3);
+
 createGrid = function(numRows) {
   let sketchDiv = document.querySelector('.sketchDiv');
   for (let i = 0; i < numRows; i++) {
@@ -27,15 +30,11 @@ setCellSize = function(numRows) {
   });
 }
 
-getRow = (id) => (Math.floor(id / 3));
-getCol = (id) => (id % 3);
-
-
 const gameBoard = (() => {
   const board = [
-    ['X', 'O', 'X'],
-    ['X', 'O', 'X'],
-    ['O', 'X', ''],
+    ['', '', ''],
+    ['', '', ''],
+    ['', '', ''],
   ]
   const checkForWin = function() {
     //Check rows, cols, and diags. Returns winner if one, else returns false
@@ -83,13 +82,17 @@ const gameBoard = (() => {
   }
 
   const addMark = function(mark, row, col) {
-    //Add mark to board[row][col]
-    if (board[row][col] != '') {
-      console.log('You cant do that!');
-      return board;
-    }
     board[row][col] = mark;
     return board;
+  }
+
+  const isValidMove = function(row, col) {
+    console.log("Verifying:", row, col);
+    if (board[row][col] == '') {
+      return true;
+    }
+    console.log("YOU CAN'T DO THAT");
+    return false;
   }
 
   const printBoard = function() {
@@ -103,14 +106,21 @@ const gameBoard = (() => {
     isFull,
     isDrawn,
     addMark,
+    isValidMove,
     printBoard
   };
 
 })();
 
-const Player = (name, char) => {
+const Player = (name, char, AI) => {
   const getName = () => name;
   const getChar = () => char;
+  const isAI = () => {
+    if (AI) {
+      return true;
+    }
+    return false;
+  }
   const isWinner = (winningChar) => {
     if (char == winningChar) {
       return true;
@@ -121,20 +131,70 @@ const Player = (name, char) => {
   return {
     getName,
     getChar,
+    isAI,
     isWinner
   };
 }
 
-const eli = Player('Eli', 'X');
-console.log(eli.isWinner('X'));
+const eli = Player('Eli', 'X', false);
+const comp = Player('Com', 'O', true);
+let players = [eli, comp];
+let title = document.querySelector('.title');
 
-gameBoard.addMark('X', 2, 2);
-gameBoard.printBoard();
-
+let turn = 0;
 createGrid(3);
 const cells = document.querySelectorAll('.cell');
 cells.forEach((cell) => {
   cell.addEventListener('click', (e) => {
-    console.log(getCol(cell.id));
+    let winChar = gameBoard.checkForWin();
+    let row = getRow(cell.id);
+    let col = getCol(cell.id);
+    let mark = players[turn % 2].getChar()
+    if (!gameBoard.isFull() && !winChar) {
+      gameBoard.addMark(mark, row, col);
+      cell.textContent = mark;
+    }
+    turn += 1;
+
+    winChar = gameBoard.checkForWin();
+    if (winChar) {
+      for (var i = 0; i < players.length; i++) {
+        if (players[i].isWinner(winChar)) {
+          title.textContent = players[i].getName() + ' WINS!';
+        }
+      }
+    }
+
+    if (players[turn % 2].isAI() && !gameBoard.isFull() && !winChar) {
+      choice = Math.floor(Math.random() * Math.floor(9));
+      row = getRow(choice);
+      col = getCol(choice);
+      mark = players[turn % 2].getChar()
+      while (!gameBoard.isValidMove(row, col)) {
+        console.log('CHOICE:', choice);
+        choice = Math.floor(Math.random() * Math.floor(9));
+        row = getRow(choice);
+        col = getCol(choice);
+      }
+      id = '#\\3'.concat(choice.toString());
+      cellChoice = document.querySelector(id);
+      gameBoard.addMark(mark, row, col);
+      cellChoice.textContent = players[turn % 2].getChar();
+      turn += 1
+    }
+
+    winChar = gameBoard.checkForWin();
+    if (winChar) {
+      for (var i = 0; i < players.length; i++) {
+        if (players[i].isWinner(winChar)) {
+          title.textContent = players[i].getName() + ' WINS!';
+        }
+      }
+    }
+    if(gameBoard.isDrawn()) {
+      title.textContent = "Cat's game!";
+      winChar = 'C';
+    }
+
   });
 });
